@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { axios } from 'axios';
 
 import './App.scss';
 
@@ -9,16 +10,16 @@ import Results from './Components/Results';
 
 function App() {
 
-  let [data, setData] = useState({});
+  let [resultsData, setResultsData] = useState({});
   let [requestParams, setRequestParams] = useState({ url: '', method: '' });
 
-  const callApi = ( reqData ) => {
-    const { params, data } = reqData;
- 
-    setData(data);
-  }
-
-  
+  useEffect(() => {
+    const callApi = async () => {
+      const results = await axios[requestParams.method](requestParams.url);
+      setResultsData(results);
+    }
+    callApi();
+  }, [requestParams])
 
   return (
     <>
@@ -26,7 +27,7 @@ function App() {
       <div>Request Method: { requestParams.method }</div>
       <div>URL: { requestParams.url }</div>
       <Form updateReqParams={ setRequestParams } />
-      <Results data={ data } />
+      <Results data={ resultsData } />
       <Footer />
     </>
   );
