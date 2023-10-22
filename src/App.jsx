@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { axios } from 'axios';
+import axios from 'axios';
 
 import './App.scss';
 
@@ -18,7 +18,9 @@ function App() {
       const results = await axios[requestParams.method](requestParams.url);
       setResultsData(results);
     }
-    callApi();
+    if ( requestParams.method && requestParams.url ) {
+      callApi();
+    }
   }, [requestParams])
 
   return (
