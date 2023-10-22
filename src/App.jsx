@@ -16,15 +16,16 @@ function App() {
     const { params, data } = reqData;
  
     setData(data);
-    setRequestParams(params);
   }
+
+  
 
   return (
     <>
       <Header />
       <div>Request Method: { requestParams.method }</div>
       <div>URL: { requestParams.url }</div>
-      <Form handleApiCall={ callApi } />
+      <Form updateReqParams={ setRequestParams } />
       <Results data={ data } />
       <Footer />
     </>
