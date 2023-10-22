@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Form.scss'
 
-function Form({ handleApiCall }) {
+function Form({ updateReqParams }) {
     let [url, setUrl] = useState('');
     let [method, setMethod] = useState('');
 
@@ -29,18 +29,7 @@ function Form({ handleApiCall }) {
     const handleSubmit = (e) => {
       e.preventDefault();
 
-      const mockData = [{
-          site: 'Yahoo',
-          url: 'http://www.yahoo.com',
-          ranking: 50
-        },
-        {
-          site: 'Slashdot',
-          url: 'www.slashdot.org',
-          ranking: 1236432
-        }
-      ]
-      handleApiCall({ data: mockData, params: { url: url, method: method }});
+      updateReqParams({ url, method });
     }
 
     return (
