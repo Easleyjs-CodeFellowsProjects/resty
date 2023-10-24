@@ -7,15 +7,15 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
+import History from './Components/History';
 
 function App() {
-  // need to replace this w/ reducer stuff
-  //let [resultsData, setResultsData] = useState({});
 
   let initialState = {
     url: '',
     method: '',
-    data: null
+    data: null,
+    history: []
   }
 
   const reqReducer = (state, action) => {
@@ -23,9 +23,14 @@ function App() {
       case 'ADD_URL':
         state.url = action.payload;
       case 'ADD_METHOD':
-        state.method = action.payload; //might need to do a return after this. or break. not sure.
+        state.method = action.payload;
       case 'ADD_DATA':
         return { ...state, data: action.payload }
+      case 'ADD_HISTORY':
+        const newResult = { ...action.payload, method: state.method, url: state.url }
+        const updatedHistory = [ ...state.history, newResult ]
+
+        return { ...state, history: updatedHistory }
       default:
         return state
     }
@@ -42,6 +47,10 @@ function App() {
           type: 'ADD_DATA',
           payload: results.data
         })
+        dispatch({
+          type: 'ADD_HISTORY',
+          payload: results.data
+        })        
       })      
     }
   }, [state.url, state.method]);
@@ -53,6 +62,7 @@ function App() {
       <div>Request Method: { state.method }</div>
       <div>URL: { state.url }</div>
       <Form dispatchReqParams={ dispatch } />
+      <History history={ state.history } dispatchHistoryChange={ dispatch } />
       <Results data={ state.data } />
       <Footer />
     </>
