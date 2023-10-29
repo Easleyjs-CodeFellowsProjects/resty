@@ -8,6 +8,21 @@ Lab 26 - Creating a RESTful front-end
 vite react
 
 ## Requirements
+## Phase 4
+### 1
+
+Replace any component state managements to use derived state from useReducer() with a reducer function and initial state.
+
+Use a reducer to store and manage all application state: loading, results, history.
+Add to history array in state after every api call
+method, url, results (json).
+
+Iterates the history array in state and shows the previous API calls.
+When one is clicked on, show the results in the results component.
+Note: the results component renders whatever is in state.
+
+
+
 ## Phase 3
 ### 1
 As a user, I want to enter the URL to an API and issue a GET request so that I can retrieve it’s data.

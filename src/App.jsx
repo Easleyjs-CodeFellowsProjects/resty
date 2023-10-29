@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import axios from 'axios';
 
 import './App.scss';
@@ -7,29 +7,63 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
+import History from './Components/History';
 
 function App() {
 
-  let [resultsData, setResultsData] = useState({});
-  let [requestParams, setRequestParams] = useState({ url: '', method: '' });
+  let initialState = {
+    url: '',
+    method: '',
+    data: null,
+    history: []
+  }
+
+  const reqReducer = (state, action) => {
+    switch(action.type) {
+      case 'ADD_URL':
+        state.url = action.payload;
+      case 'ADD_METHOD':
+        state.method = action.payload;
+      case 'ADD_DATA':
+        return { ...state, data: action.payload }
+      case 'ADD_HISTORY':
+        const newResult = { ...action.payload, method: state.method, url: state.url }
+        const updatedHistory = [ ...state.history, newResult ]
+
+        return { ...state, history: updatedHistory }
+      default:
+        return state
+    }
+  }
+
+  const [ state, dispatch ] = useReducer(reqReducer, initialState);
 
   useEffect(() => {
-    const callApi = async () => {
-      const results = await axios[requestParams.method](requestParams.url);
-      setResultsData(results);
+    const { url, method } = state;
+
+    if ( method && url ) {
+      axios[method](url).then((results) => {
+        dispatch({
+          type: 'ADD_DATA',
+          payload: results.data
+        })
+        dispatch({
+          type: 'ADD_HISTORY',
+          payload: results.data
+        })        
+      })      
     }
-    if ( requestParams.method && requestParams.url ) {
-      callApi();
-    }
-  }, [requestParams])
+  }, [state.url, state.method]);
+
 
   return (
     <>
       <Header />
-      <div>Request Method: { requestParams.method }</div>
-      <div>URL: { requestParams.url }</div>
-      <Form updateReqParams={ setRequestParams } />
-      <Results data={ resultsData } />
+      <div>Request Method: { state.method }</div>
+      <div>URL: { state.url }</div>
+      <Form dispatchReqParams={ dispatch } />
+      <History history={ state.history } dispatchHistoryChange={ dispatch } />
+      <Results data={ state.data } />
       <Footer />
     </>
   );

@@ -1,14 +1,6 @@
-import { useState } from 'react';
 import './Form.scss'
 
-function Form({ updateReqParams }) {
-    let [url, setUrl] = useState('');
-    let [method, setMethod] = useState('');
-
-    const handleUrlInput = (e) => {
-      e.preventDefault();
-      setUrl(e.target.value);
-    }
+function Form({ dispatchReqParams }) {
 
     const handleMethodClick = (e) => {
       e.preventDefault();
@@ -23,20 +15,28 @@ function Form({ updateReqParams }) {
           childNode.className = "";
         }
       }
-      setMethod(selectedMethod);
     }
 
     const handleSubmit = (e) => {
       e.preventDefault();
+      const urlInput = document.getElementById('url').value;
+      const selectedMethod = document.getElementsByClassName('selectedMethod')[0].id;
 
-      updateReqParams({ url, method });
+      dispatchReqParams({
+        type: 'ADD_URL',
+        payload: urlInput
+      });
+      dispatchReqParams({
+        type: 'ADD_METHOD',
+        payload: selectedMethod
+      })
     }
 
     return (
         <form id='form' onSubmit={ handleSubmit }>
         <label >
           <span>URL: </span>
-          <input data-testid="form-input" name='url' value={ url } type='text' onChange={ handleUrlInput } />
+          <input data-testid="form-input" name='url' id="url" type='text' />
           <button data-testid="form-button" type="submit">GO!</button>
         </label>
         <label className="methods">
